@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { assert } from 'chai';
-import { initializeTestDb, insertTestUser, getToken, clearTestDb } from './helpers/test.js';  // Assuming your helpers are correct
+import { initializeTestDb, insertTestUser, getToken } from './helpers/test.js';  // Assuming your helpers are correct
 import fetch from 'node-fetch';  // Ensure you're using node-fetch for fetch in Node.js
 
 const base_url = 'http://localhost:3001/';
@@ -8,10 +8,6 @@ const base_url = 'http://localhost:3001/';
 describe('GET Tasks', () => {
     before(async () => {
         await initializeTestDb(); // Ensures DB is set up before tests run
-    });
-
-    beforeEach(async () => {
-        await clearTestDb(); // Clear test DB before each test to avoid stale data
     });
 
     it('should return all tasks', async () => {
@@ -24,10 +20,6 @@ describe('GET Tasks', () => {
 });
 
 describe('POST Task', () => {
-    beforeEach(async () => {
-        await clearTestDb(); // Clear test DB before each test
-    });
-
     it('should post a task', async () => {
         const response = await fetch(base_url + 'create', {
             method: 'POST',
@@ -44,10 +36,6 @@ describe('POST Task', () => {
 });
 
 describe('DELETE Task', () => {
-    beforeEach(async () => {
-        await clearTestDb(); // Clear test DB before each test
-    });
-
     it('should delete a task', async () => {
         const response = await fetch(base_url + 'delete/1', {
             method: 'DELETE',
@@ -62,10 +50,6 @@ describe('DELETE Task', () => {
 describe('POST Register', () => {
     const email = 'register@foo.com';
     const password = 'password123';
-
-    beforeEach(async () => {
-        await clearTestDb(); // Clear test DB before each test
-    });
 
     it('should register with valid email and password', async () => {
         const response = await fetch(base_url + '/user/register', {
@@ -86,8 +70,7 @@ describe('POST Login', () => {
     const email = 'login@foo.com';
     const password = 'password123';
 
-    beforeEach(async () => {
-        await clearTestDb(); // Clear test DB before each test
+    before(async () => {
         await insertTestUser(email, password); // Insert the test user before login test
     });
 
@@ -111,8 +94,7 @@ describe('POST Task with Authorization', () => {
     const password = 'password123';
     let token;
 
-    beforeEach(async () => {
-        await clearTestDb(); // Clear test DB before each test
+    before(async () => {
         await insertTestUser(email, password); // Insert user before testing task creation
         token = await getToken(email); // Get token after user is inserted
     });
